@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  
+  --color-brand-black: var(--brand-black);
+  --color-brand-white: var(--brand-white);
+  --color-brand-gray-light: var(--brand-gray-light);
+  --color-brand-gray: var(--brand-gray);
+  --color-brand-gray-mid: var(--brand-gray-mid);
+  --color-brand-gray-deep: var(--brand-gray-deep);
+  --color-brand-gray-muted: var(--brand-gray-muted);
+  --color-brand-ink: var(--brand-ink);
+}
+
+:root {
+  --brand-black: #FAFAFA; /* Lightest background */
+  --brand-white: #050505; /* Deepest text/accent */
+  --brand-gray-light: #F0F0F0;
+  --brand-gray: #E5E5E5;
+  --brand-gray-mid: #D4D4D4;
+  --brand-gray-deep: #F8F8F8;
+  --brand-gray-muted: #A3A3A3;
+  --brand-ink: #171717;
+}
+
+:root.dark {
+  --brand-black: #050505; /* Deepest background */
+  --brand-white: #FAFAFA; /* Lightest text/accent */
+  --brand-gray-light: #121212;
+  --brand-gray: #1A1A1A;
+  --brand-gray-mid: #262626;
+  --brand-gray-deep: #0A0A0A;
+  --brand-gray-muted: #737373;
+  --brand-ink: #E5E5E5;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-black text-brand-ink antialiased font-sans select-none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-brand-white;
+  }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

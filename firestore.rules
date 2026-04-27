@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email.lower() == 'feteliyevmehdi88@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Product Validation
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'price', 'category', 'imageUrls']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             data.price is number && data.price >= 0 &&
+             data.category in ['Fitness Clothes', 'Protein', 'Creatine', 'Accessories'] &&
+             data.imageUrls is list && data.imageUrls.size() > 0 && data.imageUrls.size() <= 10 &&
+             (data.get('description', '') is string && data.get('description', '').size() <= 2000) &&
+             (data.get('sizes', []) is list && data.get('sizes', []).size() <= 10);
+    }
+
+    // Match blocks
+    match /products/{productId} {
+      allow get: if true;
+      allow list: if true; // Products are public
+      
+      allow create: if isAdmin() && isValidId(productId) && isValidProduct(incoming()) &&
+                    incoming().createdAt == request.time &&
+                    incoming().updatedAt == request.time;
+      
+      allow update: if isAdmin() && isValidProduct(incoming()) &&
+                    incoming().updatedAt == request.time &&
+                    incoming().createdAt == existing().createdAt; // Immutable createdAt
+      
+      allow delete: if isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A fitness product available for purchase.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the product."
+        },
+        "price": {
+          "type": "number",
+          "description": "The price in AZN."
+        },
+        "description": {
+          "type": "string",
+          "description": "A full description of the product."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "A brief summary for product cards."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["Fitness Clothes", "Protein", "Creatine", "Accessories"],
+          "description": "The category of the fitness product."
+        },
+        "imageUrls": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of URLs for product images."
+        },
+        "sizes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Available size options (e.g., S, M, L)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["name", "price", "category", "imageUrls"]
+    },
+    "Admin": {
+        "title": "Admin",
+        "description": "A user with administrative privileges.",
+        "type": "object",
+        "properties": {
+            "email": { "type": "string" },
+            "uid": { "type": "string" }
+        },
+        "required": ["email", "uid"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of products available in the store."
+    },
+    "/admins/{adminId}": {
+        "schema": "Admin",
+        "description": "Authorized administrators."
+    }
+  }
+}
